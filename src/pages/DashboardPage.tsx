@@ -534,7 +534,7 @@ export default function DashboardPage() {
                         <div className="flex gap-2">
                           <input 
                             className="w-full rounded-xl border-none bg-slate-50 px-4 py-3 font-medium focus:ring-2 focus:ring-[var(--eq-indigo)]" 
-                            defaultValue={businessQ.data.initial_avg_wait_minutes} 
+                            defaultValue={businessQ.data?.initial_avg_wait_minutes} 
                             type="number"
                             id="initialWaitInput"
                           />
@@ -558,7 +558,7 @@ export default function DashboardPage() {
                         <div className="flex gap-2">
                           <input 
                             className="w-full rounded-xl border-none bg-slate-50 px-4 py-3 font-medium focus:ring-2 focus:ring-[var(--eq-indigo)]" 
-                            defaultValue={businessQ.data.slug} 
+                            defaultValue={businessQ.data?.slug} 
                             type="text"
                             id="slugInput"
                           />
@@ -578,7 +578,7 @@ export default function DashboardPage() {
                             Update
                           </button>
                         </div>
-                        <p className="mt-2 text-[10px] text-slate-400">Your public link: {window.location.origin}/queue/{businessQ.data.slug}</p>
+                        <p className="mt-2 text-[10px] text-slate-400">Your public link: {window.location.origin}/queue/{businessQ.data?.slug}</p>
                       </div>
 
                       <div className="border-t border-slate-100 pt-6">
