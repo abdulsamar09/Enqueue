@@ -25,7 +25,10 @@ export default function QueuePublicPage() {
 
   const queueQ = useQuery({ 
     queryKey: ['queuePublic', businessQ.data?.id], 
-    queryFn: async () => (await queueApi.getByBusiness(businessQ.data!.id)).data, 
+    queryFn: async () => {
+      if (!businessQ.data?.id) return null;
+      return (await queueApi.getByBusiness(businessQ.data.id)).data;
+    }, 
     enabled: !!businessQ.data?.id 
   });
 
@@ -43,7 +46,10 @@ export default function QueuePublicPage() {
 
   const statsQ = useQuery({ 
     queryKey: ['statsPublic', businessQ.data?.id], 
-    queryFn: async () => (await entryApi.getStats(queueQ.data!.id, businessQ.data!.id)), 
+    queryFn: async () => {
+      if (!queueQ.data?.id || !businessQ.data?.id) return null;
+      return (await entryApi.getStats(queueQ.data.id, businessQ.data.id));
+    }, 
     enabled: !!businessQ.data?.id && !!queueQ.data?.id
   });
 
