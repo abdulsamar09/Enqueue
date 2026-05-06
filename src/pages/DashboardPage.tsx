@@ -200,7 +200,7 @@ export default function DashboardPage() {
         <header className="sticky top-0 z-10 flex flex-col gap-4 border-b border-slate-200 bg-white/80 px-4 py-4 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div className="flex items-center justify-between w-full sm:w-auto">
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold text-slate-900 truncate max-w-[200px] sm:max-w-xs">{businessQ.data.name}</h1>
+              <h1 className="text-xl font-bold text-slate-900 truncate max-w-[200px] sm:max-w-xs">{businessQ.data?.name}</h1>
               <p className="text-xs font-medium text-slate-500">Restaurant Dashboard • {tab}</p>
             </div>
             
@@ -282,8 +282,9 @@ export default function DashboardPage() {
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <button
                       onClick={async () => {
-                        await entryApi.skip(serving.id, queueQ.data!.id);
-                        await entryApi.callNext(queueQ.data!.id);
+                        if (!queueQ.data?.id) return;
+                        await entryApi.skip(serving.id, queueQ.data.id);
+                        await entryApi.callNext(queueQ.data.id);
                         queryClient.invalidateQueries();
                         toast.success('Diner skipped, calling next!');
                       }}
@@ -293,8 +294,9 @@ export default function DashboardPage() {
                     </button>
                     <button
                       onClick={async () => {
+                        if (!queueQ.data?.id) return;
                         await entryApi.markServed(serving.id);
-                        await entryApi.callNext(queueQ.data!.id);
+                        await entryApi.callNext(queueQ.data.id);
                         queryClient.invalidateQueries();
                         toast.success('Diner seated, calling next!');
                       }}
@@ -413,9 +415,10 @@ export default function DashboardPage() {
                     <div>
                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Restaurant Code</label>
                       <div className="mt-2 flex items-center justify-between rounded-xl bg-slate-50 p-4 ring-1 ring-slate-100">
-                        <code className="text-xl font-black text-indigo-600">{businessQ.data.slug}</code>
+                        <code className="text-xl font-black text-indigo-600">{businessQ.data?.slug}</code>
                         <button
                           onClick={() => {
+                            if (!businessQ.data?.slug) return;
                             navigator.clipboard.writeText(businessQ.data.slug);
                             toast.success('Code copied!');
                           }}
@@ -540,8 +543,9 @@ export default function DashboardPage() {
                           />
                           <button
                             onClick={async () => {
+                              if (!businessQ.data?.id) return;
                               const val = (document.getElementById('initialWaitInput') as HTMLInputElement).value;
-                              await supabase.from('businesses').update({ initial_avg_wait_minutes: parseInt(val) }).eq('id', businessQ.data!.id);
+                              await supabase.from('businesses').update({ initial_avg_wait_minutes: parseInt(val) }).eq('id', businessQ.data.id);
                               queryClient.invalidateQueries();
                               toast.success('Wait time updated');
                             }}
@@ -564,8 +568,9 @@ export default function DashboardPage() {
                           />
                           <button
                             onClick={async () => {
+                              if (!businessQ.data?.id) return;
                               const val = (document.getElementById('slugInput') as HTMLInputElement).value;
-                              const { error } = await supabase.from('businesses').update({ slug: val.trim().toLowerCase() }).eq('id', businessQ.data!.id);
+                              const { error } = await supabase.from('businesses').update({ slug: val.trim().toLowerCase() }).eq('id', businessQ.data.id);
                               if (error) {
                                 toast.error('Slug already taken or invalid');
                               } else {
