@@ -4,6 +4,7 @@ export interface Business {
   name: string;
   description?: string | null;
   slug: string;
+  initial_avg_wait_minutes: number;
   created_at: string;
 }
 
