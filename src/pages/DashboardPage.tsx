@@ -44,13 +44,14 @@ export default function DashboardPage() {
     queryKey: ['queue', businessQ.data?.id],
     enabled: !!businessQ.data?.id,
     queryFn: async () => {
-      const { data, error } = await queueApi.getByBusiness(businessQ.data!.id);
+      if (!businessQ.data?.id) return null;
+      const { data, error } = await queueApi.getByBusiness(businessQ.data.id);
       if (error) throw error;
       
       if (!data) {
         const { data: newQueue } = await supabase
           .from('queues')
-          .insert({ business_id: businessQ.data!.id, name: 'Main Queue' })
+          .insert({ business_id: businessQ.data.id, name: 'Main Queue' })
           .select()
           .single();
         return newQueue;
@@ -74,7 +75,10 @@ export default function DashboardPage() {
   const statsQ = useQuery({
     queryKey: ['stats', queueQ.data?.id],
     enabled: !!queueQ.data?.id && !!businessQ.data?.id,
-    queryFn: () => entryApi.getStats(queueQ.data!.id, businessQ.data!.id),
+    queryFn: () => {
+      if (!queueQ.data?.id || !businessQ.data?.id) return null;
+      return entryApi.getStats(queueQ.data.id, businessQ.data.id);
+    },
   });
 
   // ---------------- HISTORY ----------------
@@ -82,7 +86,8 @@ export default function DashboardPage() {
     queryKey: ['history', queueQ.data?.id],
     enabled: !!queueQ.data?.id,
     queryFn: async () => {
-      const { data } = await entryApi.getHistory(queueQ.data!.id);
+      if (!queueQ.data?.id) return [];
+      const { data } = await entryApi.getHistory(queueQ.data.id);
       return data ?? [];
     },
   });
@@ -92,7 +97,8 @@ export default function DashboardPage() {
     queryKey: ['bans', businessQ.data?.id],
     enabled: !!businessQ.data?.id,
     queryFn: async () => {
-      const { data } = await banApi.getAll(businessQ.data!.id);
+      if (!businessQ.data?.id) return [];
+      const { data } = await banApi.getAll(businessQ.data.id);
       return data ?? [];
     },
   });
